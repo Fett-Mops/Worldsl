@@ -12,7 +12,7 @@ class Game:
         pg.init()
         pg.font.init()
         
-        self.FPS = 100
+        self.FPS = 60
         self.clock = pg.time.Clock()
         self.font = pg.font.SysFont('Comic Sans MS', 30, bold = True)
         self.manager = Manager()
@@ -94,6 +94,6 @@ class Game:
             
 
             pg.display.flip()
-            #self.clock.tick(self.FPS)
+            self.clock.tick(self.FPS)
 if __name__ == "__main__":
     Game().run()

@@ -8,13 +8,15 @@ def fast_fourier_transformation(enemy : Enemy) -> int:
     enemy_a = enemy.angle
     
     freq = 0.25
-    print(enemy_a)
-    x = np.sin(2*np.pi*freq*enemy_a/30)
-    x += 0.2 * np.sin(5 * 2 * np.pi*freq*enemy_a/30)
-    x += 1/1.1 * np.sin(1.1 *2*np.pi*freq*enemy_a/30)
+    print(f"{enemy_a = }")
 
-    
-    return enemy.y + x
+    # Auch das Hinzufügen von anderen Sinuswellen
+    component1 = 10 * np.sin(2 * np.pi  *4* enemy_a/30)  # 50 Hz Sinus
+    component2 = 10 * np.sin(2 * np.pi  *2* enemy_a/30) # 120 Hz Sinus
+
+    # Gesamtes Signal
+    signal =  component1 + component2
+    return enemy.y + signal 
 
 def simple(enemy : Enemy):
     enemy.angle += 1
