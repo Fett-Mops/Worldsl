@@ -12,7 +12,7 @@ class Game:
         pg.init()
         pg.font.init()
         
-        self.FPS = 60
+        self.FPS = 600
         self.clock = pg.time.Clock()
         self.font = pg.font.SysFont('Comic Sans MS', 30, bold = True)
         self.manager = Manager()
@@ -21,18 +21,17 @@ class Game:
         self.WIDTH, self.HEIGHT = 1000,600
         self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
 
-        self.inp = Enemy(self.font, self.HEIGHT - 50 ,0)
+        self.inp = Enemy(self.font, self.HEIGHT - 50)
         self.inp.r_color = (255, 255, 255)
         self.inp.inp = True       
         self.inp.x = 20
-        self.amps = [random.randint(1,10) for _ in range(1)]
-        self.enemys = [Enemy(self.font, i*50, amp) for i, amp in enumerate(self.amps)]
+        self.enemys = [Enemy(self.font, random.randint(20,500))]
 
     def draw(self, surf, pos):
         self.screen.blit(surf, pos)
     
     def spawn_enemy(self) -> None:
-        self.enemys.append(Enemy(self.font, random.randint(20, 500), 1))
+        self.enemys.append(Enemy(self.font, random.randint(20, 500)))
         print(threading.active_count())
         self.spawn_timer = threading.Timer(self.manager.respon_time, self.spawn_enemy)
         self.spawn_timer.start()
@@ -41,13 +40,13 @@ class Game:
         self.running = True
 
         self.spawn_timer = threading.Timer(self.manager.respon_time, self.spawn_enemy)
+        self.spawn_timer.daemon = True
         self.spawn_timer.start()
 
         while self.running:
-            #self.screen.fill((0,0,0))
+            self.screen.fill((0,0,0))
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.spawn_timer.daemon = True
                     self.running = False
 
                 if event.type == pg.KEYDOWN:
@@ -63,8 +62,10 @@ class Game:
                     self.inp.name = Enemy.mask
                     
             for i, enemy in enumerate (self.enemys):
-                enemy.x += .5
-                enemy.y = fast_fourier_transformation(enemy)
+                enemy.x += .25
+                enemy.angle += 0.1
+                enemy.y += simple(enemy)
+                #enemy.y += fast_fourier_transformation(enemy)
                 
                 if enemy.update_mask():
                     self.enemys.pop(i)
@@ -85,7 +86,7 @@ class Game:
             self.draw(self.inp.mask_render, (self.inp.x, self.inp.y))
             man = [("difficulty",self.manager.difficulty), 
                    ("max", self.manager.max), 
-                   ("min", self.manager.min),
+                   ("min", self.manager),
                    ("respn_t", self.manager.respon_time)]
             
             for y, (name, val) in enumerate(man):
